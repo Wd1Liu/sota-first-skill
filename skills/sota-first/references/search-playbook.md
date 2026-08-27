@@ -1,6 +1,8 @@
 # Search Playbook
 
-Load this reference in Full mode. Adapt the search to the decision type instead of applying every item mechanically.
+Load this reference for Phase A in Full mode. Adapt the search to the decision type instead of applying every item mechanically.
+
+This playbook identifies and ranks candidates. It does not prove local feasibility. End the search phase by listing which project-specific assumptions still require the separate feasibility playbook.
 
 ## 1. Repository reconnaissance
 
@@ -161,3 +163,16 @@ Keep a compact log containing:
 - Facts that remain unresolved
 
 The final user-facing verdict may summarize this log rather than exposing every query.
+
+## 7. Feasibility handoff
+
+Before leaving Phase A, identify:
+
+- The candidate and exact version, checkpoint, service tier, or commit to test
+- Which project-fit claims are externally inferred rather than locally measured
+- The highest-risk unknown most likely to reverse the recommendation
+- Representative data, traffic, hardware, runtime, and deployment conditions
+- Measurable acceptance thresholds
+- The smallest isolated experiment that can falsify the recommendation
+
+For a Research-only request, this handoff is the stopping point. For a validation or integration request, continue with `feasibility-playbook.md`.
