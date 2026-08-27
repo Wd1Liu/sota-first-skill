@@ -2,10 +2,10 @@
 
 A reusable Agent Skill that makes coding agents research the repository, current state of the art, production maturity, and project fit **before** implementing a non-trivial feature.
 
-它解决的不是单纯“搜一下最强论文”，而是同时回答：
+It is designed to answer two distinct questions:
 
-1. 研究上最强的方法是什么？
-2. 在当前项目、硬件、延迟、许可证和维护约束下，真正应该采用什么？
+1. What is the strongest current research approach for the task?
+2. What should this project actually adopt given its hardware, latency, licensing, maintenance, and integration constraints?
 
 The skill deliberately separates **Research SOTA** from the **Engineering recommendation** and ends with one of five decisions: `KEEP`, `ADOPT`, `EXTEND`, `COMPOSE`, or `BUILD`.
 
