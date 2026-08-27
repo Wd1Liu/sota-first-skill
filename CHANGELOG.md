@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.3.0 — 2026-08-27
+
+- Added a dedicated Architecture Expert Review Gate
+- Added a concrete integration-architecture sketch before scoring
+- Added nine weighted system-compatibility dimensions and a 0–100 score
+- Added hard architecture blockers that override weighted totals
+- Added `PASS`, `CONDITIONAL PASS`, `FAIL`, and `INCONCLUSIVE` architecture outcomes
+- Added adversarial review questions covering invariants, coupling, ownership, contracts, failure domains, and simpler alternatives
+- Added truthful reviewer modes for dedicated architect/subagent and same-agent structured review
+- Added architecture conditions to feasibility contracts and production acceptance criteria
+- Added re-review rules when validation or implementation changes boundaries, contracts, topology, dependencies, or ownership
+- Expanded activation evals with architecture-review expectations
+
 ## 0.2.0 — 2026-08-27
 
 - Split research depth from delivery phase
