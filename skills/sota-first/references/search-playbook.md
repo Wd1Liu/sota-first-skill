@@ -1,202 +1,273 @@
-# Search Playbook
+# Landscape Investigation Playbook
 
-Load this reference for Phase A in Full mode. Adapt the search to the decision type instead of applying every item mechanically.
+Use this reference for Full-mode investigation. The purpose is to discover the meaningful solution landscape before selecting implementations.
 
-This playbook identifies and ranks candidates. It does not prove Architecture compatibility or local feasibility. End the search phase by preparing the evidence and proposed integration sketch required by the separate architecture and feasibility playbooks.
+Broad discovery and narrow verification are separate activities:
 
-## 1. Repository reconnaissance
+```text
+Discover broadly
+      ↓
+Cluster solution families
+      ↓
+Prune with hard constraints
+      ↓
+Deeply verify serious finalists
+```
 
-Inspect the project before searching externally.
+Do not begin with a favored library or paper and search only for confirming evidence.
 
-### Instructions and architecture
+## 1. Start from the capability graph
 
-- Applicable `AGENTS.md`, `CONTRIBUTING.md`, README files, design docs, ADRs, and issue templates
-- Directory structure, layering rules, component boundaries, and ownership boundaries
-- Existing interfaces, services, data models, schemas, events, state ownership, and extension points
-- Request, event, data, and control flow
-- Dependency graph, process boundaries, deployment topology, network paths, and hardware placement
-- Reliability, security, privacy, observability, migration, and rollback conventions
+For every sub-capability and cross-cutting requirement, generate:
 
-### Runtime and dependencies
+- Exact terms and synonyms
+- Adjacent fields that solve an equivalent problem
+- Architecture and systems terminology
+- Real-time, streaming, online, offline, edge, cloud, mobile, or embedded variants
+- Hardware, latency, quality, privacy, license, and deployment constraints
+- Evidence-type modifiers such as paper, benchmark, official code, production architecture, engineering blog, postmortem, migration, failure mode, or security advisory
 
-- Package manifests and lockfiles
-- Framework, language, compiler, runtime, driver, and deployment versions
-- Existing dependencies that already provide part of the requested capability
-- Build, test, lint, benchmark, and deployment commands
+Search for methods, system shapes, and implementation ecosystems.
 
-### Constraints
+## 2. Industry Practice lane
 
-- Latency, throughput, quality, memory, storage, compute, network, scaling, and availability
-- Consistency, durability, ordering, concurrency, backpressure, and failure assumptions
-- Supported platforms, browsers, devices, GPUs, operating systems, and offline requirements
-- Security, privacy, compliance, tenancy, data residency, and licensing
-- Team ownership, operational maturity, migration tolerance, and rollback needs
+Investigate how relevant leading organizations publicly implement similar capabilities.
 
-### Search patterns
+Potential targets:
 
-Use targeted code search for the capability, likely interface names, protocol terms, schemas, dependencies, feature flags, tests, and related TODOs. Inspect relevant history when it can explain why an existing approach, boundary, or architecture was chosen or abandoned.
+- Large technology companies with comparable systems
+- Category-leading product companies
+- High-signal startups or “star companies” in the exact field
+- Open-source maintainers and standards bodies
+- Recognized practitioners, conference speakers, and system authors
+- Vendors that publish sufficiently detailed reference architectures
 
-## 2. Classify the external research
+Priority sources:
 
-### A. Software library or integration
+1. Official engineering blogs and architecture documentation
+2. Conference talks, technical presentations, and system papers
+3. Official open-source repositories and reference implementations
+4. Public postmortems, migration reports, and operational case studies
+5. Primary interviews or detailed practitioner writeups
+6. Vendor case studies, clearly labeled as vendor-reported
 
-Prioritize:
+For every public adoption claim, record:
 
-1. Official documentation and compatibility tables
-2. Package registry metadata and release history
-3. Security advisories and migration guides
-4. Source repository activity, issue quality, and maintainer responsiveness
-5. Independent production reports and ecosystem integrations
+```markdown
+- Organization:
+- Product or system:
+- Public source and date:
+- Disclosed method or architecture:
+- Scale and operating context:
+- Evidence label:
+- Relevance to this repository:
+- Missing details:
+```
+
+Rules:
+
+- Never claim a company uses an undisclosed method
+- Do not treat a marketing page, job listing, package telemetry, or technology-detection site as proof
+- Use indirect signals only to discover better primary sources
+- Explain when the organization's scale, team, data, hardware, or regulatory context makes its design non-transferable
+- “Used by a famous company” is not a quality score
+
+## 3. Academic Frontier lane
+
+Investigate the research frontier and its implementation reality.
+
+Priority sources:
+
+1. Recent surveys, taxonomies, and benchmark papers
+2. Original peer-reviewed papers and clearly labeled preprints
+3. Official project pages, repositories, checkpoints, model cards, and dataset cards
+4. Benchmark and leaderboard maintainers
+5. Independent reproductions, ablations, follow-up papers, and failure analyses
+6. Reputable research-engineering reports with disclosed conditions
+
+For every result, preserve:
+
+- Task definition
+- Dataset and split
+- Metric
+- Evaluation protocol
+- Input resolution, sequence length, or context
+- Hardware, precision, batch size, and latency definition
+- Training or external data
+- Publication and last-update date
+- Peer-reviewed, preprint, vendor-reported, or independent-reproduction status
+- Availability of code, weights, data, and license
+
+Do not compare headline numbers across materially different settings.
+
+## 4. Ecosystem and Standards lane
+
+Investigate reusable and production-mature implementation paths.
+
+Priority sources:
+
+1. Official standards and specifications
+2. Maintained open-source projects
+3. Package registries and compatibility tables
+4. Reference architectures and SDKs
+5. Security advisories, release notes, and migration guides
+6. Maintainer issue discussions
+7. Vendor products, quotas, service limits, and support windows
 
 Check:
 
-- Exact runtime, framework, platform, protocol, and deployment compatibility
-- API stability, schema/versioning strategy, and upgrade path
-- Transitive dependency size, conflicts, and risk
+- Current release and maintenance activity
+- API stability and support lifecycle
+- Runtime, framework, compiler, operating-system, and platform compatibility
+- Transitive dependencies
 - License and commercial-use terms
-- Maintenance bus factor and release cadence
-- Observability, testing support, failure behavior, and rollback
+- Security posture and advisories
+- Observability and testability
+- Failure behavior
+- Migration and rollback
+- Ecosystem integrations and lock-in
 
-### B. ML, CV, agent, retrieval, or research method
+Repository stars, downloads, and citations are supporting signals only.
 
-Prioritize:
+## 5. Architecture search
 
-1. Original paper or technical report
-2. Official implementation, checkpoint, and project page
-3. Benchmark or leaderboard owner
-4. Credible independent reproduction
-5. Deployment reports and issue trackers
+Search explicitly for system design, not only methods.
 
-Check:
+Useful query classes:
 
-- Task definition, dataset, split, metric, and evaluation protocol
-- Publication and last-update dates
-- Peer-reviewed status versus preprint or vendor report
-- Training data, checkpoint availability, and usage terms
-- Inference latency, throughput, memory, hardware, precision, and batch size
-- Required calibration, mapping, sensors, prompts, services, or model-serving topology
-- Reproduction quality and gap between paper and released code
-- Streaming, online, offline, edge, batching, concurrency, cancellation, and failure behavior
+```text
+<capability> reference architecture
+<capability> production architecture
+<capability> system design
+<capability> engineering blog
+<capability> conference talk
+<capability> deployment architecture
+<capability> edge architecture
+<capability> real-time pipeline
+<capability> scaling
+<capability> migration
+<capability> postmortem
+<capability> failure modes
+<capability> alternative approaches
+```
 
-Never compare numbers that use different datasets, metrics, resolutions, hardware, batch sizes, or test protocols without clearly normalizing or labeling the mismatch.
+For research-heavy systems:
 
-### C. System architecture or infrastructure
+```text
+<capability> survey
+<capability> benchmark
+<capability> official implementation
+<method family> inference latency
+<method family> memory benchmark
+<method family> independent reproduction
+<method family> streaming
+<method family> limitations
+```
 
-Prioritize:
+## 6. Negative-evidence search
 
-1. Open standards and official reference architectures
-2. Maintained reference implementations
-3. Multiple independent production case studies
-4. Failure analyses, operational guidance, migration reports, and postmortems
+For every serious family, search for:
 
-Check:
+- Limitations and failure modes
+- Unmaintained or abandoned implementations
+- Security advisories
+- Migration pain
+- Production incidents and postmortems
+- Incompatible versions or drivers
+- Dataset leakage or benchmark caveats
+- Missing weights, services, data, calibration, or licenses
+- Real-time or resource failures
+- Community reports that point to primary evidence
 
-- Component and service boundaries
-- API, event, schema, and state compatibility
-- Consistency, availability, durability, and failure assumptions
-- Scaling envelope, resource placement, and cost model
-- Operational complexity, observability, incident recovery, and ownership
-- Lock-in, portability, data migration, rollout, and rollback
-- Security, privacy, tenancy, and trust boundaries
+A candidate with only positive evidence is under-investigated.
 
-### D. Security- or privacy-sensitive capability
+## 7. Source labels
 
-Prioritize official standards, vendor advisories, recognized security bodies, and primary documentation. Treat blog-only guidance as insufficient for the final recommendation. Identify threat model, supported algorithms, key management, trust boundaries, data flow, update policy, auditability, and known advisories.
+Use these labels consistently:
 
-## 3. Generate useful search queries
+- **Primary official** — specification, official documentation, original paper, official repository, official release, official postmortem
+- **Peer-reviewed**
+- **Preprint**
+- **Company-reported**
+- **Vendor-reported**
+- **Independent reproduction**
+- **Maintainer-reported**
+- **Community-reported**
+- **Locally measured**
 
-Build queries from:
+Do not blend them into a single confidence category.
 
-- Exact capability and synonyms
-- Current stack and version
-- Hard constraints such as real-time, offline, edge, license, hardware, consistency, or topology
-- Evidence type such as benchmark, official docs, release notes, reproduction, architecture case study, postmortem, security advisory, or migration
-- Current year when freshness matters
+## 8. Landscape map
 
-Examples:
+The broad phase should produce:
 
-- `<capability> official documentation compatibility <framework version>`
-- `<capability> benchmark official implementation real-time`
-- `<method class> paper official code inference latency`
-- `<library> release notes security advisory license migration`
-- `<architecture> reference implementation production postmortem`
-- `<candidate> API schema deployment topology failure modes`
+```markdown
+## Solution landscape
 
-Do not search only for “best.” Search for failure modes, limitations, migration pain, abandoned projects, negative evidence, incompatibilities, and operational incidents.
+### Capability graph
+- <capability>
+- <capability>
 
-## 4. Source quality tiers
+### Solution families
+| Family ID | Core idea | Public industry evidence | Academic evidence | Mature implementations | Main constraints | Status |
+|---|---|---|---|---|---|---|
+| FAMILY-01 | ... | ... | ... | ... | ... | Shortlist/Watch/Reject |
 
-### Tier 1 — Primary and authoritative
+### Cross-family observations
+- Common architecture patterns:
+- Important disagreements:
+- Missing evidence:
+- Negative evidence:
+- Families excluded by hard constraints:
 
-- Official specifications and documentation
-- Original papers and official technical reports
-- Official repositories, releases, model cards, dataset cards, and benchmark maintainers
-- Official security advisories and package registries
+### Shortlist for domain analysis
+- FAMILY-01:
+- FAMILY-02:
+- FAMILY-03:
+```
 
-### Tier 2 — Strong corroboration
+The table should represent distinct solution families, not near-identical repositories.
 
-- Credible independent reproductions
-- Reputable engineering and architecture reports with measurements and disclosed setup
-- Maintainer issue discussions, migration reports, and production postmortems
-- Peer-reviewed surveys that preserve comparison context
-
-### Tier 3 — Discovery and caveats
-
-- Community discussions, tutorials, aggregators, and informal comparisons
-
-Use Tier 3 to discover candidates or operational problems. Do not base a high-confidence core claim on Tier 3 alone.
-
-## 5. Minimum coverage for Full mode
+## 9. Minimum Full-mode coverage
 
 Aim for:
 
-- Two to four serious finalists
-- At least one primary source for every finalist
-- Independent corroboration for the recommended candidate when available
-- A direct check of version, release date, license, repository compatibility, interfaces, and deployment requirements
-- Negative evidence or known limitations for the leading candidate
-- Enough repository evidence to sketch how the leading candidate would actually fit the system
+- The meaningful industry, academic, and ecosystem lanes
+- At least three distinct solution families when the field genuinely offers them
+- Primary evidence for every shortlisted family
+- Current version, license, and implementation availability checks
+- At least one negative-evidence search for every finalist
+- Public industry evidence when available, or an explicit statement that no technically specific disclosure was found
+- Recent academic evidence when relevant
+- Architecture-level evidence, not only component benchmarks
 
-When this coverage is impossible, state exactly what was unavailable and lower confidence.
+When a lane is unavailable or irrelevant, state why and lower confidence appropriately.
 
-## 6. Research log
+## 10. Search log
 
-Keep a compact log containing:
+Keep a compact ledger:
 
-- Search date
+- Search date and evidence cutoff
 - Repository revision
-- Channels actually searched
-- Queries or categories searched
-- Sources used for each finalist
-- Channels unavailable or skipped and why
-- Facts that remain unresolved
+- Investigator lane
+- Queries or categories
+- Sources and labels
+- Candidate IDs affected
+- Contradictions
+- Unavailable channels
+- Unresolved facts
 
-The final user-facing verdict may summarize this log rather than exposing every query.
+The user-facing report may summarize the ledger, but the decision must remain traceable.
 
-## 7. Architecture review handoff
+## 11. Stop conditions
 
-Before leaving candidate selection, prepare:
+Stop broad discovery when:
 
-- The recommended candidate and exact version, checkpoint, service tier, or commit
-- Existing component, interface, data, deployment, security, and ownership boundaries affected
-- The smallest proposed integration architecture
-- New dependencies, runtime, platform, service, model-serving, or hardware requirements
-- Expected data and control flow
-- State, schema, protocol, migration, and rollback implications
-- Inferred compatibility claims that an architecture reviewer must challenge
-- A simpler design or alternative candidate worth comparing
+- New sources mostly map to existing families
+- Major adjacent solution classes have been checked
+- Serious families have primary evidence
+- Hard constraints can eliminate unsuitable families
+- Domain Specialists can meaningfully distinguish the shortlist
+- Additional searching is unlikely to change the family map
 
-Continue with `architecture-review.md` when architecture review is required.
-
-## 8. Feasibility handoff
-
-After the Architecture Review Gate, identify:
-
-- Architecture gate status, score, hard blockers, and explicit conditions
-- Which project-fit and architecture claims remain inferred rather than locally measured
-- The highest-risk unknown most likely to reverse the recommendation
-- Representative data, traffic, hardware, runtime, and deployment conditions
-- Measurable acceptance thresholds, including architecture-derived conditions
-- The smallest isolated experiment that can falsify the recommendation
-
-For a Research-only request, this handoff is the stopping point. For a validation or integration request, continue with `feasibility-playbook.md`.
+Do not stop merely because three popular repositories were found.

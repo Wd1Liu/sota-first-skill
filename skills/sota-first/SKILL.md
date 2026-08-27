@@ -1,369 +1,427 @@
 ---
 name: sota-first
-description: Research, compare, architecture-review, validate feasibility, and optionally integrate current state-of-the-art and production-mature approaches for a non-trivial feature, algorithm, dependency, integration, or architecture change. Trigger for research-only comparisons, architecture and system-compatibility reviews, feasibility spikes, research-then-implement requests, best/SOTA requests, unfamiliar domains, new dependencies, ML/CV/agent methods, and performance-, reliability-, privacy-, or security-sensitive work. Do not trigger for trivial edits, local bug fixes with a known cause, pure refactors, or implementation of an explicitly fixed method unless architecture compatibility or prior feasibility remains uncertain.
+description: Use an evidence-backed expert-council workflow to investigate how leading companies, recognized practitioners, open-source ecosystems, standards bodies, and current academic work solve a non-trivial capability; decompose the problem, build and deeply analyze candidate methods, synthesize multiple end-to-end architectures, review architecture and system compatibility, review concrete implementation and resource feasibility, validate the selected design locally, and optionally integrate it. Trigger for research-only comparisons, best/SOTA requests, unfamiliar domains, architecture choices, major dependencies, ML/CV/agent methods, distributed systems, and performance-, reliability-, privacy-, or security-sensitive work. Do not trigger for trivial edits, established local fixes, pure refactors, or an explicitly fixed implementation with no material compatibility uncertainty.
 ---
 
 # SOTA First
 
-Choose, architecture-review, and validate an evidence-backed approach that fits the current repository before writing substantial production code. Keep these questions separate:
+Use a staged expert council to decide how a non-trivial capability should be built before substantial production code is written.
 
-1. **Research SOTA:** What approach has the strongest credible results for the defined task?
-2. **Engineering recommendation:** What approach is the best practical fit for this project's constraints today?
-3. **Architecture compatibility:** Can the candidate fit the existing component boundaries, interfaces, data contracts, runtime, deployment topology, failure model, security boundaries, ownership, and evolution path?
-4. **Local feasibility:** Does the reviewed candidate measurably work under representative project conditions?
+Keep these conclusions separate:
 
-These may have different answers. A research winner is not automatically the best engineering choice, a promising engineering choice can fail architecture review, and a clean architecture can still fail local feasibility.
+1. **Research SOTA** — the strongest credible current method under a comparable task and evaluation setting.
+2. **Industry practice** — publicly disclosed methods used by relevant leading companies, category leaders, open-source maintainers, standards groups, or recognized practitioners.
+3. **Domain analysis** — the real operating assumptions, mechanisms, tradeoffs, and implementation variants of each serious candidate.
+4. **Architecture compatibility** — which end-to-end system shape best fits this repository's boundaries, contracts, topology, failure model, security model, ownership, and evolution path.
+5. **Engineering readiness** — whether the concrete implementation bundle is buildable, version-compatible, deployable, operable, and plausible within latency, compute, memory, storage, network, budget, and team constraints.
+6. **Local feasibility** — whether the reviewed design measurably satisfies representative project thresholds.
 
-## Core model
+A winner in one category is not automatically the winner in another.
 
-This skill separates **research depth** from **delivery phase** and applies an **Architecture Review Gate** when system structure is materially affected.
+## Operating model
+
+This skill separates **research depth** from **delivery endpoint**.
 
 ### Research depth
 
-- **Skip** — no external selection work is needed
-- **Quick mode** — compact repository check and targeted evidence review
-- **Full mode** — complete repository, evidence, comparison, architecture, and risk analysis
+- **Skip** — no external selection or compatibility work is needed.
+- **Quick mode** — compact repository inspection, focused search, one or two serious candidates, and a lightweight engineering sanity check.
+- **Full mode** — broad landscape investigation, domain-specialist analysis, multiple candidate architectures, architecture review, engineering review, and explicit gates.
 
-### Delivery phase
+### Delivery endpoint
 
-- **Research-only** — search, compare, architecture-review when relevant, and recommend without running a feasibility spike or implementing
-- **Feasibility validation** — test an architecture-reviewed candidate in an isolated, disposable way without integrating it into production
-- **Integration** — promote a reviewed and validated approach into the real feature, with tests and rollback awareness
+- **Research-only** — investigate, analyze, synthesize, review, and recommend; do not run a feasibility spike or modify production state.
+- **Feasibility validation** — continue through architecture and engineering review, then run an isolated representative spike; do not integrate production code.
+- **Integration** — continue through every required gate and promote the validated design into the real feature.
 
-These axes are independent. A narrow task can use Quick mode and stop at Research-only. A high-risk ML or infrastructure task can use Full mode, pass the Architecture Review Gate, continue through Feasibility validation, and then enter Integration.
+Stop exactly at the endpoint requested by the user. When the user requests the full pipeline, continue through passing gates without an unnecessary approval pause.
 
-### When architecture review is required
+## Expert council
 
-Run an Architecture Review Gate when the candidate materially changes any of these:
+For Full mode, use the role graph in `references/expert-orchestration.md`.
 
-- Component, module, service, process, or ownership boundaries
-- APIs, schemas, protocols, events, state ownership, or data contracts
-- A major dependency, runtime, framework, service, data store, model-serving path, or hardware requirement
-- Deployment topology, network paths, scaling, consistency, availability, or failure domains
-- Security, privacy, tenancy, compliance, or data-residency boundaries
-- Migration, rollback, observability, operational ownership, or long-term maintainability
+Core roles:
 
-Architecture review is normally required for Full-mode Integration and for architecture-sensitive Research-only or Feasibility validation requests. It may be a compact precheck for low-risk Quick-mode work.
+- **Research Director** — frames the decision, decomposes the capability, assigns roles, manages evidence and stop conditions, and reconciles conflicts.
+- **Repository Cartographer** — maps the existing architecture, constraints, interfaces, data contracts, runtime, deployment, resources, ownership, and prior attempts.
+- **Industry Practice Investigator** — finds publicly disclosed production methods from relevant leading companies, category leaders, startups, maintainers, conferences, and practitioners.
+- **Academic Frontier Investigator** — finds current papers, surveys, benchmarks, leaderboards, official implementations, datasets, and reproductions.
+- **Ecosystem and Standards Investigator** — finds mature open-source projects, frameworks, protocols, standards, registries, vendor offerings, advisories, and reference architectures.
+- **Domain Specialists** — deeply analyze each shortlisted method family or capability, including mechanism, assumptions, inputs, outputs, state, quality, latency, failure modes, maturity, and implementation variants.
+- **Solution Architect** — composes compatible capabilities into two to four distinct end-to-end candidate architectures.
+- **Architecture Reviewer** — independently compares candidate architectures and runs the Architecture Review Gate.
+- **Engineering Reviewer** — evaluates exact implementation bundles, pairwise compatibility, dependency and version constraints, resource allocation, latency budgets, deployment, operability, and integration cost through the Engineering Readiness Gate.
+- **Evidence Auditor and Decision Chair** — challenges unsupported claims, resolves contradictions, preserves uncertainty, and selects the recommended architecture without hiding hard blockers behind averages.
+- **Feasibility Experimenter** — executes the smallest isolated representative experiment that can falsify the recommendation.
+- **Integration Engineer** — implements only the reviewed and validated production boundary.
 
-## Respect the requested endpoint
+Prefer distinct subagents or reviewer contexts when the harness provides them. When it does not, run clearly separated role passes and label the mode, such as `same-agent structured review`. Never claim that a human expert or independent subagent participated when one did not.
 
-Infer the endpoint from the user's request and stop exactly there.
+## Dynamic routing
 
-| User intent | Required endpoint | Production writes |
-|---|---|---|
-| “Research/compare/recommend only,” “architecture-review only,” or “do not implement” | Research-only, including the Architecture Review Gate when relevant | No |
-| “Check feasibility,” “run a spike/prototype,” or “do not integrate yet” | Architecture review plus Feasibility validation | Only isolated disposable experiment artifacts |
-| “Research, validate, and implement if viable” | Architecture review, validation, then Integration after passing gates | Yes, only after the required gates |
-| “Implement the best/mature option” | Research and review proportional to risk, validation where material, then Integration | Yes, after the required gates |
+Do not invoke the full council mechanically for every task.
 
-When the user already requested the full pipeline, continue through research, architecture review, validation, and integration without an unnecessary approval checkpoint. When the user requested only research, architecture review, or validation, do not silently continue into the next phase.
+### Quick mode panel
 
-A later request may resume from a prior phase. Reuse an earlier research verdict, architecture review, or feasibility result when its repository assumptions, architecture, versions, constraints, and evidence are still current; otherwise refresh only the invalidated parts.
+Normally use:
 
-## Operating boundaries
+1. Repository Cartographer
+2. One focused Investigator
+3. A compact Domain and Engineering sanity check
+4. Research Director decision
+
+Escalate to Full mode when architecture, resource, security, or compatibility uncertainty emerges.
+
+### Full mode panel
+
+Normally use:
+
+1. Repository Cartographer
+2. Industry, Academic, and Ecosystem Investigators in parallel when possible
+3. Domain Specialists for serious solution families
+4. Solution Architect
+5. Architecture Reviewer and Engineering Reviewer, preferably as independent parallel reviewers
+6. Evidence Auditor and Decision Chair
+7. Feasibility Experimenter and Integration Engineer only when requested
+
+Add security, privacy, operations, cost, hardware, or data specialists only when the risk justifies them.
+
+## Boundaries
 
 ### Research-only boundary
 
-Do not edit production code, manifests, lockfiles, infrastructure, migrations, or persistent configuration. Use read-only repository inspection and external research. Do not install dependencies persistently merely to support a search-only or architecture-review-only conclusion.
+Allowed:
 
-### Architecture review boundary
+- Read-only repository inspection
+- External search
+- Candidate analysis
+- Architecture sketches and scorecards
+- Engineering estimates and compatibility matrices
+- A proposed validation contract
 
-Architecture review may inspect code, dependency graphs, interfaces, schemas, deployment files, ADRs, and history. It may produce a proposed integration sketch and scorecard, but it does not authorize production changes by itself.
+Not allowed:
 
-Prefer a dedicated architect agent, architecture subagent, or separate reviewer context when available. Otherwise perform a distinct second-pass review and label it `same-agent structured review`. Never claim independent expert review when no separate reviewer was used.
+- Production code edits
+- Persistent dependency installation
+- Manifest, lockfile, migration, infrastructure, or persistent configuration changes
+- A feasibility spike unless separately requested
 
-### Feasibility validation boundary
+### Feasibility boundary
 
-A feasibility spike may execute code, install temporary dependencies, or create disposable artifacts, but it must remain isolated from production behavior and persistent project state whenever practical. Prefer a temporary directory, worktree, throwaway branch, untracked spike, or clearly isolated experiment path. Record and clean up temporary changes.
+A spike may execute code and create temporary artifacts, but keep it isolated from production behavior and persistent project state whenever practical. Prefer a temporary directory, worktree, throwaway branch, untracked experiment, or shadow path. Record versions, commands, results, and cleanup.
 
-Do not present a toy demo, successful import, paper benchmark, or architecture score as proof that the candidate meets the project's runtime constraints.
+A successful install, import, toy demo, architecture score, or published benchmark is not a local feasibility pass.
 
 ### Integration boundary
 
-Enter production integration only when every required gate permits it.
+Production integration requires every applicable gate to permit it:
 
-Architecture gate statuses:
+- Architecture Review Gate: **PASS** or an accepted **CONDITIONAL PASS**
+- Engineering Readiness Gate: **PASS** or an accepted **CONDITIONAL PASS**
+- Feasibility Gate when material uncertainty remains: **PASS** or an accepted **CONDITIONAL PASS**
 
-- **PASS** — architecture-compatible; continue when the requested endpoint allows it
-- **CONDITIONAL PASS** — continue only with explicit architectural conditions transferred into validation and implementation
-- **FAIL** — redesign or select another candidate
-- **INCONCLUSIVE** — obtain the missing architecture evidence before Integration
+A **FAIL** blocks the candidate. Material **INCONCLUSIVE** blocks Integration until resolved or explicitly shown to be non-material.
 
-Feasibility gate statuses:
+## Full workflow
 
-- **PASS** — continue when Integration was requested
-- **CONDITIONAL PASS** — continue only if the explicit conditions fit the stated constraints and requested scope
-- **FAIL** — do not integrate; test the next justified finalist or revise the recommendation
-- **INCONCLUSIVE** — do not treat uncertainty as success; resolve the material unknown or explain why it remains
+# Phase 0: Frame the decision
 
-For **Full mode**, do not edit production code, manifests, lockfiles, infrastructure, migrations, or persistent configuration until a research verdict and any required Architecture Review Gate exist. If material feasibility risk remains, do not integrate until a feasibility verdict also exists.
+## 1. Inspect the repository
 
-## Decide the research depth
+Read applicable instructions and inspect the relevant subset of:
 
-### Skip
+- `AGENTS.md`, README files, ADRs, design documents, manifests, lockfiles, schemas, tests, deployment files, operational docs, and history
+- Existing implementations, abstractions, dependencies, experiments, TODOs, and abandoned attempts
+- Languages, frameworks, runtimes, package managers, services, models, data stores, protocols, drivers, hardware, and deployment targets
+- Component boundaries, interfaces, data contracts, state ownership, data and control flow, failure domains, security boundaries, observability, and ownership
+- Latency, throughput, quality, memory, compute, storage, network, availability, privacy, license, budget, maintenance, migration, rollback, and delivery constraints
 
-Do not run this workflow for:
+Prefer **KEEP** when the repository already contains a suitable maintained solution.
 
-- Typos, copy changes, formatting, or mechanical renames
-- A localized bug whose cause and correction are already established
-- Pure refactoring with no behavior, dependency, architecture, or compatibility choice
-- Tests or documentation for an already-selected implementation
-- A user-mandated method with no material architecture or feasibility uncertainty
+## 2. Decompose the capability
 
-### Quick mode
+Create a capability graph before searching for implementations.
 
-Use a compact repository check and a short verdict when the choice is common, low-risk, reversible, and limited in scope. Examples include a small utility, a narrow development dependency, or a standard integration with no architecture impact.
+Identify:
 
-Quick mode can stop at Research-only, run a compact architecture precheck, run a small Feasibility validation, or continue to Integration depending on the requested endpoint and impact.
+- User-visible outcome
+- Functional sub-capabilities
+- Cross-cutting requirements
+- Inputs, outputs, state, and contracts
+- End-to-end success metrics
+- Hard constraints and disqualifiers
+- Which decisions are algorithmic, architectural, engineering, operational, or policy-related
+- Which unknowns require external evidence, expert analysis, architecture review, engineering review, or local measurement
 
-### Full mode
+Do not search against a vague feature name.
 
-Use the complete workflow when any of these apply:
+# Phase A: Broad investigation
 
-- The user asks for the best, latest, mature, established, benchmark-leading, or SOTA method
-- The task adds a major dependency, service, data store, protocol, model, framework, runtime, or deployment component
-- The task involves ML, computer vision, agents, retrieval, optimization, security, privacy, distributed systems, reliability, or performance-critical behavior
-- The decision changes architecture, interfaces, data contracts, deployment, hardware needs, failure domains, or long-term maintenance
-- The domain is unfamiliar or several credible approaches likely exist
-- A wrong choice would be expensive to reverse
+## 3. Search the solution landscape
 
-When uncertain between Quick and Full, use Full.
+Use `references/search-playbook.md`.
 
-# Phase A: Research and selection
+Search broadly before narrowing:
 
-## 1. Inspect the repository first
+- How relevant leading companies and category leaders publicly describe similar systems
+- Public engineering blogs, conference talks, system papers, open-source repositories, reference architectures, case studies, and postmortems
+- Current academic surveys, papers, benchmarks, leaderboards, official code, datasets, and independent reproductions
+- Mature open-source ecosystems, package registries, standards, protocols, vendor products, advisories, and migration reports
+- Negative evidence, failed approaches, operational pain, abandoned projects, and known limitations
 
-Before external research:
+Do not infer a private company architecture from marketing, hiring posts, or indirect stack signals. Label vendor-reported, company-reported, peer-reviewed, independently reproduced, community-reported, and locally measured evidence accurately.
 
-1. Read applicable `AGENTS.md` files and repository instructions.
-2. Inspect README files, architecture docs, ADRs, manifests, lockfiles, configuration, tests, deployment files, schemas, and operational docs.
-3. Search for existing implementations, abstractions, dependencies, experiments, and abandoned attempts related to the task.
-4. Identify the current language, framework, runtime, package manager, deployment target, hardware, data flow, component boundaries, and testing conventions.
-5. Extract explicit and implicit constraints: latency, throughput, quality, memory, compute, privacy, offline behavior, license, budget, reliability, maintainability, ownership, migration, and delivery scope.
+The broad phase should produce a **solution landscape**, not merely a list of repositories.
 
-Prefer **KEEP** when the repository already contains a suitable maintained solution. Do not introduce an external dependency merely because it is newer.
+## 4. Cluster candidates
 
-## 2. Frame the decision
+Use `references/scoring-rubric.md` to shortlist families without collapsing research strength, public practice, ecosystem maturity, and predicted project fit into one opaque score.
 
-Write down, at least internally:
+Group findings into distinct solution families and implementation variants.
 
-- The exact capability being selected
-- Success metrics and acceptance criteria
-- Hard constraints and soft preferences
-- The evidence cutoff or research date
-- What would disqualify a candidate
-- Whether the task is engineering selection, research-method selection, architecture selection, or a combination
-- Which compatibility claims require architecture review
-- Which unknowns require local feasibility evidence rather than literature or documentation alone
+Aim to cover the meaningful families, then shortlist two to four serious candidates or candidate families for deep analysis. Explain when the landscape genuinely contains fewer.
 
-Do not compare methods against a vague task. For benchmark claims, ensure the task, dataset, metric, split, and operating conditions are comparable.
+# Phase A2: Domain-specialist analysis
 
-## 3. Research through available channels
+## 5. Produce candidate dossiers
 
-Use the most authoritative current sources available. Search in this order when relevant:
+Use `references/domain-analysis.md`.
 
-1. Existing repository code and history
-2. Official specifications, documentation, release notes, security advisories, and package registries
-3. Original papers, official project pages, official repositories, benchmark or leaderboard maintainers
-4. Independent reproductions, reputable engineering reports, architecture case studies, and issue trackers
-5. Community discussions only for operational caveats, not as the sole basis for core claims
+Assign a Domain Specialist to each serious family or capability when practical. Each dossier must cover:
 
-For Full mode, inspect `references/search-playbook.md`.
+- Problem formulation and mechanism
+- Required inputs, outputs, state, calibration, data, services, and assumptions
+- Quality and performance evidence under comparable conditions
+- Failure modes and operating envelope
+- Publicly disclosed adopters or expert endorsements, with source quality labels
+- Academic evidence and reproducibility
+- Concrete implementations, versions, checkpoints, licenses, and maintenance
+- Runtime, hardware, dependency, and deployment implications
+- Interface and composition requirements
+- Unknowns and falsifiable risks
 
-Search enough to identify the serious candidate classes, then verify the strongest two to four candidates. Do not collect a long list of near-duplicates.
+The Domain Specialist analyzes detail; it does not choose the final system architecture alone.
 
-## 4. Check evidence and freshness
+## 6. Audit the evidence
 
-For every finalist, verify the relevant subset of:
+The Evidence Auditor checks:
 
-- Current version, release date, maintenance activity, and API stability
-- Original source for performance or quality claims
-- Official implementation or a credible reproduction
-- Runtime, hardware, memory, data, calibration, and deployment requirements
-- License, model/data terms, security posture, and known critical issues
-- Compatibility with the repository's stack, interfaces, deployment, and constraints
-- Migration, rollback, observability, operational ownership, and failure behavior
+- Source authority and freshness
+- Benchmark comparability
+- Whether public company claims are actually disclosed and technically specific
+- Whether implementation and paper behavior match
+- Conflicting evidence and missing negative evidence
+- Claims that are estimates rather than local facts
 
-Record exact dates or versions for time-sensitive claims. Never call something “current SOTA” based on a single secondary article, incomparable benchmark, repository stars, or an undated result.
+Lower confidence rather than filling gaps with plausible-sounding assumptions.
 
-If a search channel is unavailable, say so in the verdict and reduce confidence. Do not imply exhaustive coverage.
+# Phase A3: Architecture synthesis
 
-## 5. Evaluate candidates without collapsing distinct concerns
+## 7. Build candidate architectures
 
-Use `references/scoring-rubric.md` for Full mode.
+Use `references/architecture-synthesis.md`.
 
-Evaluate separately:
+The Solution Architect composes compatible capabilities and implementations into two to four end-to-end architectures. Each option must specify:
 
-- **Research strength:** result quality, benchmark comparability, evidence quality, reproducibility, and freshness
-- **Predicted project fit:** constraint fit, maturity, integration cost, runtime/operations, security/license, and reversibility
-- **Architecture compatibility:** a separate expert score and gate based on the proposed integration design
+- Components and exact candidate implementations where known
+- Responsibilities and ownership
+- APIs, schemas, events, protocols, data formats, and state
+- Data and control flow
+- Process, service, edge, cloud, GPU, and storage placement
+- Concurrency, queues, caching, retries, timeouts, cancellation, and backpressure
+- Failure isolation and degraded behavior
+- Security and privacy boundaries
+- Observability and operational ownership
+- Preliminary latency and resource budgets
+- Migration, rollout, and rollback
+- Which capabilities are reused, extended, composed, or built
 
-Do not hide uncertainty behind a single numeric total. A score must be supported by concrete evidence. Apply hard disqualifiers before ranking.
+Do not create a “best-of-every-benchmark” Frankenstein design whose interfaces, runtimes, budgets, or operating assumptions conflict.
 
-## 6. Produce the research verdict
-
-Use one of these decisions:
-
-- **KEEP** — the existing project solution is already the best fit
-- **ADOPT** — use an established solution substantially as-is
-- **EXTEND** — use an established foundation with a thin project-specific layer
-- **COMPOSE** — combine a small number of complementary mature components
-- **BUILD** — implement a focused custom solution because no candidate satisfies the constraints
-
-The verdict must distinguish the research winner from the engineering recommendation, explain rejected finalists, state confidence and missing evidence, define the smallest sensible implementation boundary, and list the assumptions that require architecture review or feasibility validation.
-
-Use the relevant template in `references/verdict-template.md`.
-
-# Phase A2: Architecture expert review
-
-## 7. Prepare the proposed integration architecture
-
-Before scoring, describe the smallest plausible production design for the recommended candidate. Include the relevant component boundaries, responsibilities, interfaces, schemas, state ownership, dependencies, runtime, data and control flow, deployment topology, failure domains, trust boundaries, observability, migration, and rollback.
-
-Do not ask an architect to score an undefined statement such as “use candidate X.”
+# Phase A4: Comparative architecture review
 
 ## 8. Run the Architecture Review Gate
 
 Use `references/architecture-review.md`.
 
-When the host supports it, invoke a dedicated architect agent or subagent as an adversarial reviewer. Give it repository evidence, constraints, candidate facts, and the proposed design, and ask it to identify broken invariants, coupling, ownership gaps, compatibility risks, and a simpler alternative. When no separate reviewer exists, perform the same checklist as a clearly labeled second pass.
+Prefer a dedicated Architecture Reviewer that did not author the options. Compare the candidate architectures, not just a single favored design.
 
 The review must produce:
 
 - Reviewer mode
-- A 0–100 weighted architecture compatibility score with per-dimension 1–5 ratings
-- Hard blockers checked
+- Hard blockers for each option
+- Per-dimension 1–5 scores and a weighted 0–100 compatibility score
 - Strongest compatibility argument and strongest objection
 - **PASS**, **CONDITIONAL PASS**, **FAIL**, or **INCONCLUSIVE**
-- Conditions that must enter the feasibility contract or production acceptance criteria
-- Any change to the engineering recommendation
+- Required redesign or conditions
+- The architecture option that should proceed to engineering review, or a request for another synthesis round
 
-If the candidate receives **FAIL**, redesign it or review the next justified finalist. If material **INCONCLUSIVE** remains, do not enter Integration. A **CONDITIONAL PASS** may proceed only with explicit bounded conditions.
+A score cannot override a hard blocker.
 
-If the requested endpoint is Research-only, stop after the research verdict and any required architecture review. Do not run a spike or implement.
+# Phase A5: Engineering readiness review
+
+## 9. Select concrete implementation bundles
+
+For each architecture still under consideration, identify the concrete implementation bundle:
+
+- Libraries, frameworks, models, checkpoints, services, protocols, and versions
+- Language, runtime, compiler, driver, CUDA, operating-system, and hardware requirements
+- Data formats, tensor layouts, schemas, serialization, and transport
+- Build, packaging, deployment, configuration, observability, and testing path
+
+## 10. Run the Engineering Readiness Gate
+
+Use `references/engineering-review.md`.
+
+The Engineering Reviewer must produce:
+
+- Pairwise component compatibility matrix
+- Dependency, version, runtime, ABI, driver, and platform analysis
+- End-to-end latency budget and critical path
+- CPU, GPU, VRAM, RAM, storage, network, startup, and concurrency budget with explicit headroom
+- Resource placement and contention analysis
+- Build, deploy, test, monitor, migrate, and rollback plan
+- Supply-chain, license, service, and operational constraints
+- Integration effort and ownership
+- Hard blockers, per-dimension scores, and **PASS**, **CONDITIONAL PASS**, **FAIL**, or **INCONCLUSIVE**
+
+Engineering review predicts buildability. It does not replace representative local validation.
+
+## 11. Iterate once when useful
+
+If the Architecture Reviewer or Engineering Reviewer finds bounded problems, the Solution Architect may revise the options once and rerun only the affected review dimensions. Avoid endless design loops. If no option passes, revisit the shortlist or choose **BUILD** with a narrowly defined custom boundary.
+
+# Phase A6: Decision
+
+## 12. Produce the decision record
+
+Use the relevant templates in `references/verdict-template.md`.
+
+Keep separate:
+
+- Research SOTA
+- Public industry practice
+- Domain-specialist conclusions
+- Architecture comparison
+- Engineering readiness
+- Recommended end-to-end architecture
+- Exact implementation bundle
+- Rejected options and reasons
+- Confidence and missing evidence
+- Conditions to validate
+- Smallest production boundary
+
+Use one implementation strategy:
+
+- **KEEP**
+- **ADOPT**
+- **EXTEND**
+- **COMPOSE**
+- **BUILD**
+
+Do not collapse research, architecture, and engineering scores into one opaque average. Hard blockers and gate outcomes remain authoritative.
+
+If the endpoint is Research-only, stop here.
 
 # Phase B: Feasibility validation
 
-Use `references/feasibility-playbook.md` whenever material project-specific uncertainty remains or the user explicitly requests a feasibility check, spike, prototype, benchmark, or proof of concept.
+## 13. Define a falsifiable validation contract
 
-## 9. Define a falsifiable validation contract
+Use `references/feasibility-playbook.md`.
 
-Before building the spike, specify:
+Transfer architecture and engineering conditions into measurable acceptance criteria. Specify:
 
-- The selected candidate and exact version, checkpoint, service tier, or commit
-- The architecture gate status and conditions
-- The assumptions and highest-risk unknowns being tested
-- Representative data, traffic, hardware, runtime, and operating conditions
-- Measurable acceptance thresholds
+- Candidate architecture and exact implementation bundle
+- Repository revision and environment
+- Highest-risk assumptions
+- Representative inputs, traffic, hardware, runtime, and deployment conditions
+- Quality, latency, throughput, resource, compatibility, failure, security, and integration thresholds
 - Hard failure conditions
-- The smallest experiment capable of changing the decision
-- The isolation and cleanup plan
+- Isolation and cleanup plan
+- The smallest experiment that can reverse the decision
 
-Transfer architecture conditions into measurable tests whenever possible. Test the highest-risk unknown first.
+## 14. Run the isolated spike
 
-## 10. Run an isolated representative spike
+Test the highest-risk unknown first. Record raw measurements and distinguish them from external claims.
 
-Prefer read-only capability probes first, then a temporary script or environment, then an isolated worktree or experiment path only when needed.
+Assign exactly one feasibility status:
 
-Measure the relevant subset of:
+- **PASS**
+- **CONDITIONAL PASS**
+- **FAIL**
+- **INCONCLUSIVE**
 
-- Quality or task success on representative project inputs
-- End-to-end latency, throughput, warm-up, startup, and streaming behavior
-- Peak and steady-state CPU, GPU memory, RAM, storage, and network use
-- Runtime, framework, API, schema, data-contract, dependency, and deployment compatibility
-- Failure handling, retries, cancellation, backpressure, observability, migration, and rollback
-- Security, privacy, service, license, checkpoint, and operational constraints
-- The actual size, coupling, and ownership of the required project-specific adapter
+If the spike changes boundaries, contracts, implementations, topology, ownership, or resource assumptions, rerun affected architecture and engineering review dimensions.
 
-Record the repository revision, environment, versions, configuration, commands, raw results, and differences from published conditions. Keep external claims separate from locally measured results.
-
-## 11. Produce the feasibility verdict
-
-Assign exactly one status:
-
-- **PASS** — hard thresholds and critical integration assumptions were verified
-- **CONDITIONAL PASS** — viable only under explicit bounded conditions
-- **FAIL** — a hard threshold or non-negotiable constraint was violated
-- **INCONCLUSIVE** — a material uncertainty could not be resolved with the available data, access, tooling, or environment
-
-Use the feasibility template in `references/verdict-template.md`.
-
-If validation changes the proposed boundaries, contracts, dependencies, topology, failure model, or ownership, rerun the affected architecture-review dimensions before Integration.
-
-If the candidate fails, update the research verdict and test the next justified finalist when that is within the requested scope. If the requested endpoint is Feasibility validation, stop here and do not integrate production code.
+If the endpoint is Feasibility validation, stop here.
 
 # Phase C: Integration
 
-Enter this phase only when Integration was requested and every required gate allows it.
+## 15. Promote cleanly
 
-## 12. Promote the reviewed and validated approach cleanly
+Enter Integration only when requested and allowed by every required gate.
 
-1. Recreate the smallest maintainable production implementation; do not blindly copy experimental code.
-2. Preserve the reviewed component boundaries, interfaces, contracts, failure isolation, security boundaries, and ownership model.
-3. Reuse the selected library, model, service, protocol, or standard instead of rebuilding delegated capability.
-4. Avoid speculative wrappers, dependency duplication, hard-coded experiment settings, and unrelated refactors.
-5. Follow repository conventions for versioning, dependency pinning, configuration, observability, deployment, and data contracts.
-6. Preserve a reasonable rollout and rollback path for high-impact changes.
-
-## 13. Preserve both architecture and feasibility evidence
-
-1. Add tests, contract checks, architecture tests, benchmarks, or evaluation cases that cover the conditions that established compatibility and feasibility.
-2. Verify the integrated path under representative conditions, not only the isolated spike.
-3. Report any difference between the reviewed architecture, the spike, and the final implementation.
-4. Do not repeat external performance claims as project results without local measurement.
-5. Rerun affected architecture dimensions when the final implementation materially differs from the reviewed design.
-6. Roll back or move to the next viable candidate when the integrated result violates a gate condition.
+- Recreate the smallest maintainable production implementation; do not blindly copy spike code.
+- Preserve reviewed boundaries, contracts, resource budgets, failure isolation, security conditions, ownership, and rollback.
+- Reuse mature delegated capability instead of rebuilding it.
+- Avoid speculative wrappers, duplicate dependencies, hard-coded experiment settings, and unrelated refactors.
+- Add contract checks, architecture tests, benchmarks, resource guards, integration tests, and observability that preserve the reasons the design passed.
+- Verify the final integrated path under representative conditions.
+- Re-review any material deviation.
 
 ## Phase continuity
 
-Each phase should leave a compact handoff for the next phase:
+Each phase leaves a compact handoff:
 
-- Research handoff: selected candidate, rejected alternatives, constraints, proposed integration boundary, and unknowns
-- Architecture handoff: reviewer mode, proposed design, dimension scores, gate status, blockers, conditions, and validation implications
-- Feasibility handoff: environment, measurements, status, conditions, cleanup state, and production boundary
-- Integration handoff: production changes, preserved architecture and acceptance tests, measured results, deviations, ownership, and rollback path
+- Repository brief
+- Solution landscape
+- Candidate dossiers
+- Candidate architecture set
+- Architecture review
+- Engineering readiness review
+- Decision record
+- Feasibility verdict
+- Integration result
 
-Do not repeat completed work merely because the task resumed later. Recheck freshness, repository revision, changed architecture, versions, and constraints, then continue from the earliest invalidated assumption.
+Reuse prior handoffs when their repository revision, versions, constraints, evidence date, and assumptions remain current. Refresh only invalidated parts.
 
 ## Evidence rules
 
-- Cite or link every material external claim when the host supports citations or URLs.
-- Prefer primary sources; use secondary sources to corroborate or expose caveats.
-- Label peer-reviewed, preprint, vendor-reported, independently reproduced, architecture-inferred, and locally measured evidence accurately.
-- Treat popularity as weak supporting evidence, never proof of quality, maturity, or compatibility.
-- State assumptions and unknowns instead of inventing missing project facts.
-- Respect an explicitly selected method. Flag incompatibilities, but do not silently replace it.
+- Cite or link material external claims when the host supports it.
+- Prefer primary and authoritative sources.
+- Search for contrary and negative evidence.
+- Treat popularity, citations, company size, and brand recognition as weak signals, not proof.
+- Do not claim that a company uses an undisclosed internal method.
+- Do not treat academic SOTA as production maturity.
+- Do not treat public production adoption as task-optimal for this repository.
+- Separate external claims, expert analysis, engineering estimates, and local measurements.
+- State unavailable channels and unresolved uncertainty.
 
-## Stop conditions by phase
+## Stop conditions
 
-### Research-only
+Stop research when:
 
-Stop when the meaningful candidate classes are covered, the recommendation is supported by primary evidence, the required Architecture Review Gate is complete, and remaining unknowns are identified as feasibility questions.
+- The meaningful solution families have been covered
+- Serious candidates have primary evidence
+- Domain assumptions and cross-component constraints are understood
+- Candidate architectures are sufficiently distinct
+- Architecture and engineering reviews can discriminate among them
+- Additional searching is unlikely to change the shortlist or validation plan
 
-### Feasibility validation
-
-Stop when a hard disqualifier is confirmed, the acceptance thresholds and critical assumptions are resolved, or the result is demonstrably inconclusive with the missing evidence identified.
-
-### Integration
-
-Stop when the reviewed design is integrated with the smallest sensible surface area, architecture and feasibility conditions are preserved by tests or checks, representative verification passes, deviations are documented, and a rollback path exists where warranted.
-
-Three well-verified candidates are better than fifteen shallow candidates. One adversarial architecture review and one representative falsifiable spike are better than a polished toy demo.
+Three deeply verified families are better than fifteen shallow links. Two coherent end-to-end architectures are better than a pile of individually strong but incompatible components.
 
 ## Anti-patterns
 
-- Starting implementation before understanding the repository
-- Claiming an architecture expert reviewed the design when only the implementing agent did
-- Scoring an undefined architecture without component, interface, data-flow, deployment, and ownership details
-- Averaging away a hard architecture blocker with a high research score
-- Continuing after the user explicitly requested research-only, architecture-review-only, or validation-only work
-- Treating a research verdict or architecture score as proof of local feasibility
-- Treating successful installation, import, or toy output as a feasibility pass
-- Letting disposable prototype code silently become production code
-- Validating on unrepresentative data, hardware, traffic, or settings
-- Treating “highest benchmark number” as “best production choice”
-- Selecting by GitHub stars, citations, or brand recognition alone
-- Ignoring interfaces, contracts, ownership, failure domains, licenses, data terms, security, or deployment requirements
-- Adding a large dependency for a tiny capability
-- Researching indefinitely instead of making a falsifiable decision
-- Claiming “nothing exists” after only one search channel
+- Searching only for “best library” or “latest paper”
+- Choosing a candidate before mapping the solution landscape
+- Treating a major-company implementation as universally optimal
+- Inventing private implementation details
+- Letting one generic agent summarize every domain without deep analysis
+- Asking an architect to score an undefined integration
+- Reviewing only the favored architecture
+- Combining individually strong components without checking contracts, runtimes, and budgets
+- Ignoring version, driver, ABI, license, resource, or deployment conflicts
+- Averaging away a hard blocker
+- Treating engineering estimates as local measurements
+- Treating a toy demo as a feasibility pass
+- Continuing beyond the user-requested endpoint

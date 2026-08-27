@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.4.0 — 2026-08-27
+
+- Reframed the skill as a staged expert council rather than a single generic research pass
+- Added Research Director and Repository Cartographer roles
+- Added parallel Industry Practice, Academic Frontier, and Ecosystem and Standards investigator lanes
+- Added truthful rules for public company implementation evidence and prohibited invented private internals
+- Added Domain Specialist candidate dossiers covering mechanisms, contracts, operating envelopes, failure modes, and concrete implementations
+- Added multi-architecture synthesis from capability graphs and normalized component contracts
+- Added explicit protection against incompatible “best-of-every-benchmark” Frankenstein architectures
+- Upgraded architecture review from single-option approval to comparative review across multiple end-to-end options
+- Added a separate Engineering Readiness Expert and Gate
+- Added pairwise implementation compatibility matrices
+- Added exact runtime, version, ABI, driver, data-format, license, deployment, and supply-chain checks
+- Added end-to-end latency, CPU, GPU, VRAM, RAM, storage, network, startup, concurrency, and headroom budgets
+- Added bounded architecture–engineering revision loops
+- Added Evidence Auditor and Decision Chair roles
+- Added compact and full expert-panel routing
+- Expanded decision, review, validation, and integration templates
+- Expanded evals to cover panel selection and engineering-review requirements
+- Updated static validation for all expert-council artifacts and rubrics
+
 ## 0.3.0 — 2026-08-27
 
 - Added a dedicated Architecture Expert Review Gate

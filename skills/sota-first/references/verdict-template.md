@@ -1,293 +1,330 @@
-# Verdict Templates
+# Expert Council Output Templates
 
-Use the template for the phase being completed. Keep the report proportional to the decision and preserve enough information for a later phase to resume without repeating all prior work.
+Use only the sections needed for the requested endpoint. Keep stable IDs so a later phase can resume without repeating valid work.
 
-## Phase A: Full research and architecture verdict
+## 1. Research and landscape brief
 
 ```markdown
-## SOTA-first research verdict
+# SOTA-first decision record
 
-**Research date:** YYYY-MM-DD  
-**Task:** <precise capability>  
-**Research depth:** Full  
-**Requested endpoint:** Research-only | Feasibility validation | Integration  
-**Decision:** KEEP | ADOPT | EXTEND | COMPOSE | BUILD  
+**Research date:** YYYY-MM-DD
+**Repository revision:** ...
+**Task:** ...
+**Research depth:** Quick | Full
+**Requested endpoint:** Research-only | Feasibility validation | Integration
+**Council mode:** separate subagents | mixed | same-agent role-separated passes
+**Decision strategy:** KEEP | ADOPT | EXTEND | COMPOSE | BUILD
 **Confidence:** High | Medium | Low
 
-### Project constraints
+## Repository constraint brief
 
-- <hard constraint>
-- <hard constraint>
-- <important preference>
+- Existing architecture:
+- Components and ownership:
+- Interfaces and data contracts:
+- Runtime, deployment, and hardware:
+- Quality, latency, throughput, and resource constraints:
+- Security, privacy, reliability, and compliance:
+- Migration and rollback:
+- Existing or abandoned related work:
+- Unknowns:
 
-### Search coverage
+## Capability graph
 
-- Repository: <files, areas, architecture, and history inspected>
-- External: <official docs, registries, papers, benchmarks, repositories, advisories, architecture reports>
-- Unavailable or skipped: <channel and impact on confidence>
+| Capability ID | Outcome | Inputs | Outputs | State | Hard constraints | Cross-cutting concerns |
+|---|---|---|---|---|---|---|
 
-### Candidate comparison
+## Investigation coverage
 
-| Candidate | Primary evidence | Research strength | Predicted project fit | Architecture review need | Main limitation | Status |
-|---|---|---:|---:|---|---|---|
-| A | <source> | 1–5 | 1–5 | Required/Optional/None | <limitation> | Finalist/Rejected |
-| B | <source> | 1–5 | 1–5 | Required/Optional/None | <limitation> | Finalist/Rejected |
-| C | <source> | 1–5 | 1–5 | Required/Optional/None | <limitation> | Finalist/Rejected |
+| Lane | Reviewer mode | Sources and areas searched | Evidence cutoff | Missing coverage | Confidence |
+|---|---|---|---|---|---|
+| Industry practice | ... | ... | ... | ... | ... |
+| Academic frontier | ... | ... | ... | ... | ... |
+| Ecosystem and standards | ... | ... | ... | ... | ... |
 
-### Research conclusions
+## Solution landscape
 
-- **Research SOTA:** <candidate or “not established”>, because <evidence and comparison boundary>.
-- **Engineering recommendation:** <candidate>, because <fit to constraints>.
-- **Why they differ:** <state explicitly, or “They are the same.”>
-- **Rejected finalists:** <candidate → concrete reason>.
+| Family ID | Core idea | Public industry evidence | Academic evidence | Mature implementations | Main constraints | Status |
+|---|---|---|---|---|---|---|
 
-### Proposed integration architecture
+## Candidate dossier summary
 
-- Existing boundaries affected: <components, services, modules, owners>
-- New or changed responsibilities: <summary>
-- Interfaces and data contracts: <APIs, schemas, events, state>
-- Data and control flow: <compact description or text diagram>
-- Dependencies/runtime/platform: <changes>
-- Deployment and resource topology: <processes, services, hardware, network paths>
-- Failure, security, and privacy boundaries: <summary>
-- Migration, rollout, and rollback: <summary>
+| Candidate ID | Domain specialist | Mechanism | Strongest evidence | Main assumption | Main failure mode | Concrete implementations | Status |
+|---|---|---|---|---|---|---|---|
 
-### Architecture Expert Review
+## Evidence audit
 
-- **Reviewer mode:** Dedicated architect/subagent | Same-agent structured review
+- Weakest material claim:
+- Incomparable evidence:
+- Indirect or vendor-reported adoption:
+- Missing negative evidence:
+- Contradictions:
+- Facts that are estimates:
+- Evidence that could reverse the shortlist:
+```
+
+## 2. Candidate architecture set
+
+```markdown
+## Candidate architectures
+
+### ARCH-01 — <name>
+
+- Strategy:
+- Components and implementations:
+- Responsibilities and ownership:
+- Interfaces, schemas, events, and state:
+- Data and control flow:
+- Runtime and topology:
+- Concurrency, queues, retries, cancellation, and backpressure:
+- Failure isolation and degraded mode:
+- Security and privacy:
+- Observability and operations:
+- Preliminary latency and resource budget:
+- Migration and rollback:
+- Supporting evidence:
+- Main assumptions:
+- Main objection:
+
+### ARCH-02 — <name>
+
+...
+```
+
+Use `architecture-synthesis.md` for the full option schema.
+
+## 3. Comparative Architecture Review Gate
+
+```markdown
+## Architecture Review Gate
+
+**Reviewer mode:** dedicated architect | separate reviewer context | same-agent structured review
+**Options reviewed:** ARCH-01, ARCH-02, ...
+
+### Hard blockers
+
+- ARCH-01:
+- ARCH-02:
+
+### Scorecards
+
+| Dimension | Weight | ARCH-01 | Evidence | ARCH-02 | Evidence |
+|---|---:|---:|---|---:|---|
+| Boundary and responsibility fit | 15% | ... | ... | ... | ... |
+| Interface and data-contract fit | 15% | ... | ... | ... | ... |
+| Dependency, runtime, and platform fit | 15% | ... | ... | ... | ... |
+| Deployment, topology, and resource fit | 10% | ... | ... | ... | ... |
+| Reliability and failure isolation | 10% | ... | ... | ... | ... |
+| Security, privacy, and compliance fit | 10% | ... | ... | ... | ... |
+| Observability and operability | 10% | ... | ... | ... | ... |
+| Migration, compatibility, and rollback | 5% | ... | ... | ... | ... |
+| Maintainability, ownership, and evolution | 10% | ... | ... | ... | ... |
+
+### Result
+
+| Architecture | Score | Gate | Strongest compatibility argument | Strongest objection | Required conditions |
+|---|---:|---|---|---|---|
+
+### Architecture recommendation
+
+- Preferred option:
+- Why alternatives lost:
+- Required redesign:
+- Conditions transferred to engineering review:
+- Minority objection:
+- Remaining uncertainty:
+```
+
+## 4. Engineering Readiness Gate
+
+```markdown
+## Engineering Readiness Gate
+
+**Reviewer mode:** dedicated engineering reviewer | separate reviewer context | same-agent structured engineering review
+**Architectures reviewed:** ...
+**Implementation bundles:** BUNDLE-01, BUNDLE-02, ...
+
+### Concrete bundles
+
+- BUNDLE-01:
+  - Libraries/frameworks/models/services:
+  - Exact versions or commits:
+  - Runtime, OS, drivers, hardware:
+  - Build and deployment path:
+
+### Pairwise compatibility matrix
+
+| Producer/dependency | Consumer/dependent | Contract | Runtime/version | Resource interaction | License/security | Status | Adapter |
+|---|---|---|---|---|---|---|---|
+
+### Resource and latency budget
+
+| Stage | Implementation | p50 budget | p95 budget | CPU | GPU/VRAM | RAM | Network | Storage | Concurrency | Evidence type |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
+
+### Hard blockers
+
+- BUNDLE-01:
+- BUNDLE-02:
+
+### Scorecards
+
+| Dimension | Weight | BUNDLE-01 | Evidence | BUNDLE-02 | Evidence |
+|---|---:|---:|---|---:|---|
+| Implementation availability and maturity | 10% | ... | ... | ... | ... |
+| Dependency, version, runtime, and platform compatibility | 20% | ... | ... | ... | ... |
+| Interface and data-representation compatibility | 15% | ... | ... | ... | ... |
+| Resource and performance budget | 20% | ... | ... | ... | ... |
+| Build, deploy, and operational path | 10% | ... | ... | ... | ... |
+| Reliability, observability, and testability | 10% | ... | ... | ... | ... |
+| Security, license, and supply chain | 5% | ... | ... | ... | ... |
+| Migration, rollback, ownership, and maintainability | 10% | ... | ... | ... | ... |
+
+### Result
+
+| Bundle | Score | Gate | Main advantage | Main engineering risk | Estimated effort | Conditions |
+|---|---:|---|---|---|---|---|
+
+### Engineering recommendation
+
+- Preferred bundle:
+- Resource placement:
+- Headroom:
+- Build/deploy plan:
+- Ownership:
+- Conditions transferred to feasibility:
+- Remaining unknowns:
+```
+
+## 5. Final Research-only decision
+
+```markdown
+## Final decision
+
+- **Research SOTA:** ...
+- **Public industry practice:** ...
+- **Most mature ecosystem path:** ...
+- **Domain-specialist conclusion:** ...
+- **Preferred architecture:** ARCH-XX
 - **Architecture gate:** PASS | CONDITIONAL PASS | FAIL | INCONCLUSIVE
-- **Architecture compatibility score:** <0–100>
-- **Hard blocker:** None | <blocker>
-
-| Architecture dimension | Weight | Score (1–5) | Evidence and risk |
-|---|---:|---:|---|
-| Boundary and responsibility fit | 15% | <score> | <evidence/risk> |
-| Interface and data-contract fit | 15% | <score> | <evidence/risk> |
-| Dependency, runtime, and platform fit | 15% | <score> | <evidence/risk> |
-| Deployment, topology, and resource fit | 10% | <score> | <evidence/risk> |
-| Reliability and failure isolation | 10% | <score> | <evidence/risk> |
-| Security, privacy, and compliance fit | 10% | <score> | <evidence/risk> |
-| Observability and operability | 10% | <score> | <evidence/risk> |
-| Migration, compatibility, and rollback | 5% | <score> | <evidence/risk> |
-| Maintainability, ownership, and evolution | 10% | <score> | <evidence/risk> |
-
-- **Strongest compatibility argument:** <argument>
-- **Strongest architecture objection:** <objection>
-- **Simpler alternative considered:** <alternative or “None identified”>
-- **Required conditions/redesign:** <conditions>
-- **Impact on engineering recommendation:** Unchanged | Changed to <candidate/design>, because <reason>
-
-### Proposed production boundary
-
-- Reuse: <library, model, service, protocol, or standard>
-- Custom code: <small project-specific layer only>
-- Do not build: <capability delegated to the mature component>
-- Architecture invariants to preserve: <boundaries/contracts/failure model>
-- Rollback: <how to reverse safely when relevant>
-
-### Feasibility handoff
-
-- Candidate to validate: <candidate and exact version/checkpoint/commit>
-- Architecture conditions to test: <conditions inherited from review>
-- Critical assumptions: <project-specific claims not proven by research or architecture review>
-- Highest-risk unknown: <unknown most likely to change the decision>
-- Representative environment: <hardware, runtime, data, traffic, or deployment conditions>
-- Proposed thresholds: <measurable acceptance criteria>
-- Suggested smallest spike: <falsifiable experiment>
-
-### Unknowns and assumptions
-
-- <remaining uncertainty>
-- <assumption that could change the decision>
+- **Preferred implementation bundle:** BUNDLE-XX
+- **Engineering gate:** PASS | CONDITIONAL PASS | FAIL | INCONCLUSIVE
+- **Engineering recommendation:** ...
+- **Why these conclusions differ:** ...
+- **Rejected families, architectures, and bundles:** ...
+- **Decision strategy:** KEEP | ADOPT | EXTEND | COMPOSE | BUILD
+- **Smallest production boundary:** ...
+- **Confidence:** ...
+- **Missing evidence:** ...
+- **Proposed feasibility contract:** ...
 ```
 
-When the requested endpoint is Research-only, stop after this verdict and any required Architecture Expert Review.
+For Research-only, stop here.
 
-## Phase A: Quick research verdict
-
-```markdown
-**SOTA-first research (Quick):** <KEEP/ADOPT/EXTEND/COMPOSE/BUILD> `<candidate>`.
-
-- Requested endpoint: Research-only | Feasibility validation | Integration
-- Repository check: <existing solution or relevant constraint>
-- Evidence checked: <official source/version and one corroborating signal when available>
-- Why this choice: <one or two concrete reasons>
-- Main caveat: <risk or unknown>
-- Architecture precheck: None | Optional | Required, because <reason>
-- Feasibility need: <none, or the exact assumption to test>
-- Proposed boundary: <what will be reused versus written>
-```
-
-## Architecture Review Gate only
+## 6. Feasibility Gate
 
 ```markdown
-## SOTA-first architecture review
+## Feasibility Gate
 
-**Review date:** YYYY-MM-DD  
-**Repository revision:** <commit or working-tree state>  
-**Candidate/design:** <name, version, and integration design reference>  
-**Reviewer mode:** Dedicated architect/subagent | Same-agent structured review  
-**Status:** PASS | CONDITIONAL PASS | FAIL | INCONCLUSIVE  
-**Architecture compatibility score:** <0–100>
+**Validation date:** ...
+**Repository revision:** ...
+**Architecture:** ARCH-XX
+**Implementation bundle:** BUNDLE-XX
+**Status:** PASS | CONDITIONAL PASS | FAIL | INCONCLUSIVE
 
-### Proposed architecture
+### Contract
 
-- Boundaries and responsibilities: <summary>
-- Interfaces/data contracts: <summary>
-- Runtime/dependencies/platform: <summary>
-- Deployment/resource topology: <summary>
-- Failure/security/privacy model: <summary>
-- Ownership/migration/rollback: <summary>
-
-### Scorecard
-
-| Dimension | Weight | Score (1–5) | Evidence and risk |
-|---|---:|---:|---|
-| Boundary and responsibility fit | 15% | <score> | <evidence/risk> |
-| Interface and data-contract fit | 15% | <score> | <evidence/risk> |
-| Dependency, runtime, and platform fit | 15% | <score> | <evidence/risk> |
-| Deployment, topology, and resource fit | 10% | <score> | <evidence/risk> |
-| Reliability and failure isolation | 10% | <score> | <evidence/risk> |
-| Security, privacy, and compliance fit | 10% | <score> | <evidence/risk> |
-| Observability and operability | 10% | <score> | <evidence/risk> |
-| Migration, compatibility, and rollback | 5% | <score> | <evidence/risk> |
-| Maintainability, ownership, and evolution | 10% | <score> | <evidence/risk> |
-
-### Adversarial findings
-
-- Hard blocker: None | <blocker>
-- Most likely invariant to break: <finding>
-- Largest coupling/ownership risk: <finding>
-- Hardest contract or rollback problem: <finding>
-- Largest new failure domain: <finding>
-- Strongest objection: <finding>
-- Simpler alternative: <alternative>
-
-### Gate decision
-
-- Conditions/redesign: <details>
-- Recommendation impact: Unchanged | Changed to <candidate/design>
-- Feasibility criteria inherited from architecture: <measurable conditions>
-- Next action: Stop | Feasibility validation | Review next finalist | Redesign
-```
-
-## Phase B: Feasibility verdict
-
-```markdown
-## SOTA-first feasibility verdict
-
-**Validation date:** YYYY-MM-DD  
-**Repository revision:** <commit or working-tree state>  
-**Candidate:** <name and exact version/checkpoint/commit>  
-**Architecture gate:** PASS | CONDITIONAL PASS  
-**Architecture score:** <0–100>  
-**Status:** PASS | CONDITIONAL PASS | FAIL | INCONCLUSIVE  
-**Requested endpoint:** Feasibility validation | Integration
-
-### Validation contract
-
-- Hypothesis: <falsifiable project-specific claim>
-- Architecture conditions inherited: <conditions>
-- Representative setup: <data, traffic, hardware, runtime, deployment conditions>
-- Hard thresholds: <non-negotiable acceptance criteria>
-- Isolation method: <temporary directory, worktree, branch, shadow path, or other>
+- Hypothesis:
+- Representative setup:
+- Hard thresholds:
+- Architecture conditions:
+- Engineering conditions:
+- Isolation and cleanup:
 
 ### Environment
 
-- Hardware/OS: <details>
-- Runtime/framework/drivers: <details>
-- Candidate configuration: <precision, batch size, resolution, service tier, or other material settings>
-- Commands/procedure: <reproducible summary>
+- Hardware/OS:
+- Runtime/framework/drivers:
+- Versions:
+- Data or traffic:
+- Commands and configuration:
 
 ### Results
 
-| Criterion | Threshold | Measured result | Outcome |
-|---|---:|---:|---|
-| <criterion> | <threshold> | <measurement> | Pass/Fail/Unresolved |
-| <architecture-derived criterion> | <threshold> | <measurement> | Pass/Fail/Unresolved |
+| Criterion | Threshold | Measured result | Outcome | Evidence |
+|---|---:|---:|---|---|
 
 ### Findings
 
-- Locally measured: <results produced by this validation>
-- External claim comparison: <where the setup or result differs from published/vendor conditions>
-- Architecture assumptions: <verified, disproved, or unresolved>
-- Integration assumption: <verified, disproved, or unresolved>
-- Failure modes observed: <details>
+- Locally measured:
+- Differences from external claims:
+- Compatibility findings:
+- Resource findings:
+- Failure modes:
+- Adapter and integration surface:
 
-### Transition decision
+### Transition
 
-- Architecture re-review needed: Yes/No, because <boundary, contract, topology, dependency, or ownership change>
-- Next action: Integrate | Validate next finalist | Revise research verdict | Redesign | Stop
-- Conditions: <requirements for a conditional pass, or “None”>
-- Production boundary: <clean implementation surface if integration is allowed>
-- Preserved acceptance test: <test or benchmark to carry into integration>
-- Cleanup state: <removed artifacts, or exact artifacts that remain>
-
-### Remaining uncertainty
-
-- <unknown that still matters>
+- Next action:
+- Conditions:
+- Production boundary:
+- Preserved acceptance test:
+- Cleanup:
+- Remaining uncertainty:
 ```
 
-For a validation-only request, stop after this verdict. Do not integrate production code.
+For validation-only, stop here.
 
-## Phase C: Integration completion
+## 7. Integration result
 
 ```markdown
-## SOTA-first integration result
+## Integration result
 
-**Source research verdict:** <date or reference>  
-**Architecture gate:** PASS | CONDITIONAL PASS  
-**Architecture compatibility score:** <0–100>  
-**Feasibility status:** PASS | CONDITIONAL PASS  
-**Decision:** KEEP | ADOPT | EXTEND | COMPOSE | BUILD  
-**Integrated candidate:** <name and exact version/checkpoint/commit>
-
-### Production architecture
-
-- Preserved component boundaries: <details>
-- Interfaces and contracts: <details>
-- Runtime/dependencies/deployment: <details>
-- Failure/security/privacy boundaries: <details>
-- Ownership and operations: <details>
-- Migration/rollout/rollback: <details>
+**Source decision record:** ...
+**Architecture gate:** PASS | CONDITIONAL PASS
+**Engineering gate:** PASS | CONDITIONAL PASS
+**Feasibility gate:** PASS | CONDITIONAL PASS
+**Integrated architecture:** ARCH-XX
+**Implementation bundle:** BUNDLE-XX
+**Decision strategy:** KEEP | ADOPT | EXTEND | COMPOSE | BUILD
 
 ### Production changes
 
-- Reused component: <mature capability adopted>
-- Project-specific code: <minimal adapter or custom boundary>
-- Configuration/dependencies: <material changes>
-- Intentionally excluded: <experimental or delegated capability not promoted>
+- Reused components:
+- Project-specific code:
+- Interfaces and contracts:
+- Dependencies and configuration:
+- Resource placement:
+- Observability and ownership:
+- Intentionally excluded experiment artifacts:
 
 ### Verification
 
-| Architecture or feasibility criterion | Integrated result | Outcome |
+| Preserved condition | Integrated result | Outcome |
 |---|---:|---|
-| <architecture condition> | <result> | Pass/Fail |
-| <criterion preserved from feasibility> | <measurement> | Pass/Fail |
 
-### Differences from reviewed design and spike
+### Deviations
 
-- <difference and impact, or “None”>
-- Architecture dimensions re-reviewed: <dimensions or “None”>
+- Architecture delta:
+- Engineering-bundle delta:
+- Feasibility delta:
+- Re-review performed:
 
-### Rollback and follow-up
+### Rollout and rollback
 
-- Rollback path: <how to reverse>
-- Operational owner: <team/component owner>
-- Remaining condition or risk: <details>
+- Rollout:
+- Rollback:
+- Remaining conditions:
+- Follow-up:
 ```
 
-## Rules for using the templates
+## Rules
 
-- Do not create a long Full-mode report for a narrow Quick-mode choice.
-- Include source links or host-native citations for material external claims.
-- Use exact dates and versions for time-sensitive information.
-- Do not claim a research winner where evidence is not comparable; say “not established” and explain why.
-- Do not claim a dedicated architecture expert or subagent was used when the review was performed by the same agent.
-- Score a concrete proposed architecture, not an undefined intention.
-- Hard architecture blockers override the weighted score.
-- Keep Research strength, Predicted project fit, Architecture compatibility, and locally measured feasibility separate.
-- Research-only means no feasibility spike or implementation unless separately requested.
-- Feasibility validation means no production integration unless separately requested.
-- When the user requested the full pipeline, continue through each passing gate without an unnecessary approval pause.
-- After architecture or feasibility `FAIL`, or material `INCONCLUSIVE`, do not integrate the candidate as though it passed.
+- Include source links or host-native citations for material external claims
+- Label evidence type
+- Use exact versions and dates for time-sensitive facts
+- Do not claim a public company implementation that was not disclosed
+- Do not claim consensus when roles disagree materially
+- Do not average away hard blockers
+- Separate estimates from local measurements
+- Keep output proportional to the task
+- Stop at the user's requested endpoint
