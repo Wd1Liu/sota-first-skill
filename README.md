@@ -1,62 +1,102 @@
 # SOTA First Skill
 
-A reusable Agent Skill that makes coding agents research the repository, compare current state-of-the-art and production-mature approaches, validate the selected candidate under real project constraints, and optionally integrate it into the feature.
+A reusable Agent Skill that makes coding agents research a repository, compare current state-of-the-art and production-mature approaches, have the proposed integration reviewed for architecture and system compatibility, validate the selected candidate under representative project constraints, and optionally integrate it into the feature.
 
-It is designed to answer three distinct questions:
+It is designed to answer four distinct questions:
 
 1. What is the strongest current research approach for the task?
-2. What should this project actually adopt given its hardware, latency, licensing, maintenance, and integration constraints?
-3. Does the recommended candidate measurably work in this repository before it becomes production code?
+2. What should this project actually adopt given its product, hardware, latency, licensing, maintenance, and integration constraints?
+3. Does the proposed design fit the existing architecture, interfaces, data contracts, runtime, deployment topology, failure model, security boundaries, ownership, and evolution path?
+4. Does the reviewed candidate measurably work in this repository before it becomes production code?
 
-The skill deliberately separates **Research SOTA** from the **Engineering recommendation**, and separates both from **local feasibility**.
+The skill keeps **Research SOTA**, **Engineering recommendation**, **Architecture compatibility**, and **local feasibility** separate.
+
+## Workflow
+
+```text
+Repository and external research
+             │
+             ▼
+Engineering recommendation
+             │
+             ▼
+Architecture Expert Review Gate
+             │
+             ▼
+Isolated feasibility validation
+             │
+             ▼
+Production integration
+```
+
+A request may stop after research and architecture review, stop after feasibility validation, or continue through all passing gates into Integration.
 
 ## Two independent controls
-
-The workflow uses two independent dimensions.
 
 ### Research depth
 
 - `Skip` — no external selection work is needed
 - `Quick mode` — compact repository check and targeted evidence review
-- `Full mode` — complete repository, evidence, comparison, and risk analysis
+- `Full mode` — complete repository, evidence, comparison, architecture, and risk analysis
 
 ### Delivery phase
 
-- `Research-only` — search, compare, and recommend without implementing
+- `Research-only` — search, compare, architecture-review when relevant, and recommend without implementing
 - `Feasibility validation` — run an isolated, disposable spike without integrating production code
-- `Integration` — promote a validated candidate into the real feature
+- `Integration` — promote an architecture-reviewed and validated candidate into the real feature
 
-A request can stop after any phase or continue through all three:
+When the user requests the full pipeline, the skill continues through each passing gate without pausing for redundant approval. When the user requests only research, architecture review, or validation, it stops at that boundary.
 
-```text
-Research and selection
-        │
-        ▼
-Feasibility validation
-        │
-        ▼
-Production integration
-```
+## Architecture expert review
 
-When the user requests the full pipeline, the skill continues through each passing gate without pausing for redundant approval. When the user requests only research or validation, it stops at that boundary.
+For architecture-sensitive work, the skill requires a concrete integration sketch covering component boundaries, responsibilities, interfaces, schemas, state, dependencies, runtime, data and control flow, deployment topology, failure isolation, security boundaries, observability, ownership, migration, and rollback.
+
+The review should use a dedicated architect agent or subagent when the active harness provides one. Otherwise it performs a separate second-pass review and labels it `same-agent structured review`; it must not falsely claim independent expert review.
+
+The architecture reviewer scores nine dimensions:
+
+| Dimension | Weight |
+|---|---:|
+| Boundary and responsibility fit | 15% |
+| Interface and data-contract fit | 15% |
+| Dependency, runtime, and platform fit | 15% |
+| Deployment, topology, and resource fit | 10% |
+| Reliability and failure isolation | 10% |
+| Security, privacy, and compliance fit | 10% |
+| Observability and operability | 10% |
+| Migration, compatibility, and rollback | 5% |
+| Maintainability, ownership, and evolution | 10% |
+
+Each dimension receives a 1–5 score. The weighted result is reported on a 0–100 scale, but hard blockers override the number.
+
+Architecture gate outcomes:
+
+- `PASS` — score at least 80, no hard blocker, and no dimension below 3
+- `CONDITIONAL PASS` — score 65–79, or a bounded non-blocking weakness with explicit remediation
+- `FAIL` — score below 65, a hard blocker, or a critical dimension scored 1
+- `INCONCLUSIVE` — material architecture evidence or the integration design is missing
+
+The reviewer must present both the strongest compatibility argument and the strongest objection. Architecture conditions are transferred into feasibility thresholds and production acceptance criteria.
 
 ## What it does
 
 - Inspects the current repository before searching externally
+- Identifies existing architecture, interfaces, data contracts, dependencies, deployment, hardware, and ownership constraints
 - Selects Quick or Full research depth based on decision risk
-- Supports research-only, validation-only, and research-validate-integrate workflows
-- Prioritizes official documentation, original papers, official code, registries, benchmarks, and security advisories
-- Compares research strength and project fit on separate axes
+- Supports research-only, architecture-review-only, validation-only, and full research-review-validate-integrate workflows
+- Prioritizes official documentation, original papers, official code, registries, benchmarks, standards, advisories, architecture reports, and postmortems
+- Compares research strength and predicted project fit without collapsing them into one score
+- Requires a separate Architecture Review Gate for material system changes
 - Defines a falsifiable feasibility contract with measurable thresholds
 - Runs representative spikes in an isolated disposable environment
-- Uses `PASS`, `CONDITIONAL PASS`, `FAIL`, or `INCONCLUSIVE` as the integration gate
-- Prevents a toy demo, successful import, or paper benchmark from being treated as local proof
-- Integrates only the validated production boundary and preserves the acceptance test
-- Reports unavailable search channels and uncertainty instead of pretending the search was exhaustive
+- Prevents a paper benchmark, architecture score, successful import, or toy demo from being treated as local proof
+- Integrates only the reviewed and validated production boundary
+- Preserves architecture conditions, acceptance tests, operational ownership, and rollback information
+- Reports unavailable tools, missing evidence, and uncertainty honestly
 
 ## Decisions and gates
 
-The research phase ends with one of five implementation strategies:
+The research phase ends with one implementation strategy:
 
 - `KEEP` — retain the repository's existing suitable solution
 - `ADOPT` — use a mature solution substantially as-is
@@ -64,14 +104,14 @@ The research phase ends with one of five implementation strategies:
 - `COMPOSE` — combine a small number of complementary mature components
 - `BUILD` — implement a focused custom boundary because no candidate satisfies the constraints
 
-The feasibility phase ends with one status:
+Architecture review and feasibility validation each end with one status:
 
-- `PASS` — all hard thresholds and critical assumptions were verified
-- `CONDITIONAL PASS` — viable only under explicit bounded conditions
-- `FAIL` — a hard threshold or non-negotiable constraint was violated
-- `INCONCLUSIVE` — a material uncertainty could not be resolved
+- `PASS`
+- `CONDITIONAL PASS`
+- `FAIL`
+- `INCONCLUSIVE`
 
-A research verdict is not a feasibility pass.
+A high research score cannot override an architecture or feasibility failure.
 
 ## Repository layout
 
@@ -79,6 +119,7 @@ A research verdict is not a feasibility pass.
 skills/sota-first/
 ├── SKILL.md
 └── references/
+    ├── architecture-review.md
     ├── feasibility-playbook.md
     ├── scoring-rubric.md
     ├── search-playbook.md
@@ -120,66 +161,57 @@ Codex discovers user-scoped skills from `~/.agents/skills` and repository-scoped
 ./scripts/install.sh --scope repo --repo /path/to/project
 ```
 
-The installers refuse to overwrite an existing copy unless `-Force` (PowerShell) or `--force` (shell) is supplied.
-
-## Manual installation
-
-User scope:
-
-```text
-~/.agents/skills/sota-first/
-```
-
-Repository scope:
-
-```text
-<repo>/.agents/skills/sota-first/
-```
-
-Copy the entire `skills/sota-first` directory into the chosen location.
+The installers refuse to overwrite an existing copy unless `-Force` or `--force` is supplied.
 
 ## Usage
 
-### Research-only
+### Research and architecture review only
 
 ```text
-Use $sota-first to research and compare the most mature approaches for
-real-time indoor localization from an egocentric video stream. Do not
-implement or change project files.
+Use $sota-first to research the strongest approaches for real-time
+indoor localization, propose how the leading candidate would fit this
+repository, and have an architecture reviewer score system compatibility.
+Do not run a spike or implement anything.
 ```
 
-Expected result: a research verdict, candidate comparison, recommendation, and feasibility handoff. No production changes.
+Expected result: research verdict, proposed integration architecture, architecture scorecard and gate, rejected alternatives, and feasibility handoff. No production changes.
 
 ### Research plus feasibility validation
 
 ```text
 Use $sota-first to choose the best visual grounding method for our GPU
-and latency constraints, then run an isolated representative feasibility
-spike. Stop before production integration.
+and latency constraints, architecture-review the proposed pipeline, then
+run an isolated representative feasibility spike. Stop before integration.
 ```
 
-Expected result: a research verdict followed by a measured feasibility verdict. No production integration.
+Expected result: research verdict, Architecture Review Gate, and measured feasibility verdict. No production integration.
 
-### Research, validate, and integrate
+### Research, review, validate, and integrate
 
 ```text
 Use $sota-first to research the most mature PDF extraction pipeline,
-validate it on representative project documents, and if it passes the
-acceptance thresholds, integrate it into the service.
+architecture-review its fit with our service and data contracts, validate
+it on representative documents, and if every required gate passes,
+integrate it into the service.
 ```
 
-Expected result: research verdict, feasibility gate, clean integration, preserved acceptance tests, and rollback information.
+Expected result: staged verdicts, clean integration, preserved contract checks and acceptance tests, operational ownership, and rollback information.
 
 ### Resume a later phase
 
 ```text
-The prior SOTA-first research verdict is still current. Validate the
-recommended model on representative clips, but do not integrate it yet.
+The prior research verdict is still current. Run the Architecture Review
+Gate for the proposed design and stop before feasibility validation.
 ```
 
 ```text
-The candidate has passed the SOTA-first feasibility gate. Integrate the
-validated boundary and preserve its acceptance benchmark.
+The candidate passed architecture review. Validate its conditions on
+representative traffic, but do not integrate it yet.
+```
+
+```text
+The reviewed candidate passed feasibility. Integrate the validated
+boundary and preserve its architecture and acceptance checks.
 ```
 
 The skill should not activate for trivial edits such as fixing a typo, formatting a file, or renaming a local variable.
@@ -190,12 +222,15 @@ The skill should not activate for trivial edits such as fixing a typo, formattin
 python scripts/validate_skill.py
 ```
 
-The repository includes activation cases with expected research depth and delivery phase so trigger and phase-selection behavior can be evaluated over time.
+The repository includes activation cases with expected research depth, delivery phase, and architecture-review requirement so trigger and phase-selection behavior can be evaluated over time.
 
 ## Design principles
 
 - Primary evidence before popularity
-- Repository fit before novelty
+- Repository and architecture fit before novelty
+- Concrete integration design before architecture scoring
+- Adversarial review before endorsement
+- Hard blockers before weighted totals
 - Research selection before feasibility claims
 - Representative validation before production promotion
 - Comparable benchmarks only
