@@ -1,6 +1,8 @@
 # Candidate Scoring Rubric
 
-Use this rubric to make reasoning inspectable, not to create false precision. Score only dimensions supported by evidence. Use a 1–5 scale and add a short justification for each rating.
+Use this rubric to make research-stage reasoning inspectable, not to create false precision. Score only dimensions supported by evidence. Use a 1–5 scale and add a short justification for each rating.
+
+Candidate scoring ranks what should be validated next. It does **not** produce a feasibility `PASS`. Only representative local validation against explicit thresholds can produce `PASS`, `CONDITIONAL PASS`, `FAIL`, or `INCONCLUSIVE`.
 
 ## Hard disqualifiers
 
@@ -14,6 +16,8 @@ Remove a candidate before ranking when it fails a non-negotiable constraint, for
 - Abandoned maintenance when the project cannot safely own a fork
 - Evidence measured on a task that is materially different from the actual requirement
 
+A hard disqualifier discovered during feasibility validation overrides the earlier score.
+
 ## Axis A: Research strength
 
 | Dimension | 1 | 3 | 5 |
@@ -26,6 +30,8 @@ Remove a candidate before ranking when it fails a non-negotiable constraint, for
 
 ## Axis B: Project fit
 
+Before local validation, label these ratings as **predicted project fit** when they rely on documentation, external reports, or repository inspection rather than measurements in the target environment.
+
 | Dimension | 1 | 3 | 5 |
 |---|---|---|---|
 | Constraint fit | Violates major constraints | Fits with tradeoffs | Fits all hard constraints and key preferences |
@@ -35,9 +41,11 @@ Remove a candidate before ranking when it fails a non-negotiable constraint, for
 | Security/license | Material unresolved risk | Acceptable with mitigations | Clear compatible terms and strong security posture |
 | Reversibility/ecosystem | High lock-in and weak ecosystem | Some portability | Easy rollback/migration and healthy ecosystem |
 
+After a feasibility spike, update the relevant justifications with locally measured evidence. Do not silently convert an external estimate into a local fact.
+
 ## Optional weighting
 
-Use weighting only when it clarifies the decision. Adjust weights to the task and disclose the change.
+Use weighting only when it clarifies the research-stage decision. Adjust weights to the task and disclose the change.
 
 ### Research-oriented selection
 
@@ -58,10 +66,21 @@ Use weighting only when it clarifies the decision. Adjust weights to the task an
 
 Do not average Research strength and Project fit into one number when doing so would hide a meaningful conflict. Report two separate conclusions instead.
 
+## Feasibility is a gate, not a score
+
+A candidate's feasibility status must be based on the validation contract in `feasibility-playbook.md`:
+
+- **PASS** — all hard thresholds and critical assumptions were verified
+- **CONDITIONAL PASS** — viable under explicit bounded conditions
+- **FAIL** — a hard threshold or non-negotiable constraint was violated
+- **INCONCLUSIVE** — a material uncertainty remains unresolved
+
+A high research or project-fit score cannot override `FAIL` or material `INCONCLUSIVE` status.
+
 ## Confidence
 
 Use:
 
-- **High:** Primary evidence is current, comparable, independently corroborated where practical, and project constraints are known.
-- **Medium:** The recommendation is supported, but evidence, compatibility, or one important constraint remains partially uncertain.
-- **Low:** Search coverage is limited, claims are not independently verified, project constraints are missing, or evidence conflicts materially.
+- **High:** Primary evidence is current, comparable, independently corroborated where practical, project constraints are known, and any material feasibility claim is locally measured.
+- **Medium:** The recommendation is supported, but evidence, compatibility, feasibility, or one important constraint remains partially uncertain.
+- **Low:** Search coverage is limited, claims are not independently verified, project constraints are missing, validation is unrepresentative, or evidence conflicts materially.
